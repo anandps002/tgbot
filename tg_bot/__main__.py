@@ -33,7 +33,7 @@ Perks:
 - bugs will always be fixed ASAP
 - no need to maintain anything yourself
 
-Also, no support can be given for any [clones](https://telegram.dog/MidukkiBot); source might be changed and that's not [my](https://telegram.dog/PaulSonOfLars) problem.
+Also, no support can be given for any [clones](https://telegram.dog/MidukkiBot); source might be changed and that's not [my](https://telegram.dog/Anand_VFC) problem.
 **Keep in mind that any changes you DO do to the source have to be on github, as per the license.**
 
 If you're enjoying using me, and/or would like to help me survive in the wild, hit /donate to help fund/upgrade my VPS!
