@@ -1,5 +1,10 @@
 tg_bot/config.py
 *.pyc
 .idea/
+.project
+.pydevproject
+.directory
+.vscode
 /venv/
-tg_bot/chromeworm.py
+*.jpg
+
