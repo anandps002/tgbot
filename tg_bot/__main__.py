@@ -24,19 +24,9 @@ I'm built in python3, using the python-telegram-bot library, and am not an open 
 
 You can find the list of available commands with /help.
 
-Using standard [Thalapathy](http://telegram.dog/Thalapathynanbanbot) is always gonna be easier.
-Perks:
-- latest features
-- it's free
-- biggest list of users for any /info commands
-- the database will always be correctly formatted
-- bugs will always be fixed ASAP
-- no need to maintain anything yourself
-
+Source of the bot might be changed and that's not [my](https://telegram.dog/Anand_VFC) problem.
 Also, no support can be given for any [clones](https://telegram.dog/MidukkiBot); source might be changed and that's not [my](https://telegram.dog/Anand_VFC) problem.
 **Keep in mind that any changes you DO do to the source have to be on github, as per the license.**
-
-If you're enjoying using me, and/or would like to help me survive in the wild, hit /donate to help fund/upgrade my VPS!
 """
 
 HELP_STRINGS = """
