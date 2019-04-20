@@ -60,11 +60,11 @@ def warn(user: User, chat: Chat, reason: str, message: Message, warner: User = N
                      "\n<b>Counts:</b> <code>{}/{}</code>".format(html.escape(chat.title),
                                                                   warner_tag,
                                                                   mention_html(user.id, user.first_name),
-                                                                  reason, num_warns, limit)
+                                                                  user.id, reason, num_warns, limit)
 
     else:
         keyboard = InlineKeyboardMarkup(
-            [[InlineKeyboardButton("Remove warn", callback_data="rm_warn({})".format(user.id))]])
+            [[InlineKeyboardButton("Remove warn (admin only)", callback_data="rm_warn({})".format(user.id))]])
 
         reply = "{} has been WARNED! \nCount: {}/{}".format(mention_html(user.id, user.first_name), num_warns,
                                                              limit)
@@ -413,7 +413,7 @@ be a sentence, encompass it with quotes, as such: `/addwarn "very angry" This is
 
 __mod_name__ = "Warnings"
 
-WARN_HANDLER = CommandHandler("warn", warn_user, pass_args=True, filters=Filters.group)
+WARN_HANDLER = DisableAbleCommandHandler("warn", warn_user, pass_args=True, filters=Filters.group)
 RESET_WARN_HANDLER = CommandHandler(["resetwarn", "resetwarns"], reset_warns, pass_args=True, filters=Filters.group)
 CALLBACK_QUERY_HANDLER = CallbackQueryHandler(button, pattern=r"rm_warn")
 MYWARNS_HANDLER = DisableAbleCommandHandler("warns", warns, pass_args=True, filters=Filters.group)

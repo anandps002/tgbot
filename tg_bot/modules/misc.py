@@ -3,7 +3,7 @@ import json
 import random
 from datetime import datetime
 from typing import Optional, List
-
+import time
 import requests
 from telegram import Message, Chat, Update, Bot, MessageEntity
 from telegram import ParseMode, ReplyKeyboardRemove, ReplyKeyboardMarkup
@@ -11,76 +11,58 @@ from telegram.ext import CommandHandler, run_async, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
 
 from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, SUPPORT_USERS, WHITELIST_USERS, BAN_STICKER
-from tg_bot.__main__ import GDPR
 from tg_bot.__main__ import STATS, USER_INFO
 from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.extraction import extract_user
 from tg_bot.modules.helper_funcs.filters import CustomFilters
 
 RUN_STRINGS = (
-    "Where do you think you're going?",
-    "Huh? what? did they get away?",
-    "ZZzzZZzz... Huh? what? oh, just them again, nevermind.",
-    "Get back here!",
-    "Not so fast...",
-    "Look out for the wall!",
-    "Don't leave me alone with them!!",
-    "You run, you die.",
-    "Jokes on you, I'm everywhere",
-    "You're gonna regret that...",
-    "You could also try /kickme, I hear that's fun.",
-    "Go bother someone else, no-one here cares.",
-    "You can run, but you can't hide.",
-    "Is that all you've got?",
-    "I'm behind you...",
-    "You've got company!",
-    "We can do this the easy way, or the hard way.",
-    "You just don't get it, do you?",
-    "Yeah, you better run!",
-    "Please, remind me how much I care?",
-    "I'd run faster if I were you.",
-    "That's definitely the droid we're looking for.",
-    "May the odds be ever in your favour.",
-    "Famous last words.",
-    "And they disappeared forever, never to be seen again.",
-    "\"Oh, look at me! I'm so cool, I can run from a bot!\" - this person",
-    "Yeah yeah, just tap /kickme already.",
-    "Here, take this ring and head to Mordor while you're at it.",
-    "Legend has it, they're still running...",
-    "Unlike Harry Potter, your parents can't protect you from me.",
-    "Fear leads to anger. Anger leads to hate. Hate leads to suffering. If you keep running in fear, you might "
-    "be the next Vader.",
-    "Multiple calculations later, I have decided my interest in your shenanigans is exactly 0.",
-    "Legend has it, they're still running.",
-    "Keep it up, not sure we want you here anyway.",
-    "You're a wiza- Oh. Wait. You're not Harry, keep moving.",
-    "NO RUNNING IN THE HALLWAYS!",
-    "Hasta la vista, baby.",
-    "Who let the dogs out?",
-    "It's funny, because no one cares.",
-    "Ah, what a waste. I liked that one.",
-    "Frankly, my dear, I don't give a damn.",
-    "My milkshake brings all the boys to yard... So run faster!",
-    "You can't HANDLE the truth!",
-    "A long time ago, in a galaxy far far away... Someone would've cared about that. Not anymore though.",
-    "Hey, look at them! They're running from the inevitable banhammer... Cute.",
-    "Han shot first. So will I.",
-    "What are you running after, a white rabbit?",
-    "As The Doctor would say... RUN!",
+    "ഇരുട്ട് നിറഞ്ഞ എന്റെ ഈ ജീവിതത്തിലേക്ക് ഒരു തകർച്ചയെ ഓർമ്മിപ്പിക്കാൻ എന്തിന് ഈ ഓട്ടക്കാലണ ആയി നീ വന്നു",
+    "നമ്മൾ നമ്മൾ പോലുമറിയാതെ അധോലോകം ആയി മാറിക്കഴിഞ്ഞിരിക്കുന്നു ഷാജിയേട്ടാ...",
+    "എന്നെ ചീത്ത വിളിക്കു... വേണമെങ്കിൽ നല്ല ഇടി ഇടിക്കു... പക്ഷെ ഉപദേശിക്കരുത്.....",
+    "ഓ ബ്ലഡി ഗ്രാമവാസീസ്!",
+    "സീ മാഗ്ഗി ഐ ആം ഗോയിങ് ടു പേ ദി ബിൽ.",
+    "പോരുന്നോ എന്റെ കൂടെ!",
+    "തള്ളെ കലിപ്പ് തീരണില്ലല്ലോ!!",
+    "ശബരിമല ശാസ്താവാണെ ഹരിഹരസുതനാണെ ഇത് ചെയ്തവനെ ഞാൻ പൂട്ടും നല്ല മണിച്ചിത്രത്താഴിട്ട് പൂട്ടും .",
+    "ഞാൻ കണ്ടു...!! കിണ്ടി... കിണ്ടി...!",
+    "മോന്തയ്ക്കിട്ട് കൊടുത്തിട്ട് ഒന്ന് എടുത്ത് കാണിച്ചുകൊടുക്ക് അപ്പോൾ കാണും ISI മാർക്ക് ",
+    "ഡേവീസേട്ട, കിങ്ഫിഷറിണ്ടാ... ചിൽഡ്...! .",
+    "പാതിരാത്രിക്ക് നിന്റെ അച്ഛൻ ഉണ്ടാക്കി വെച്ചിരിക്കുന്നോ പൊറോട്ടയും ചിക്കനും....",
+    "ഇത് ഞങ്ങളുടെ പണിസാധനങ്ങളാ രാജാവേ.",
+    "കളിക്കല്ലേ കളിച്ചാൽ ഞാൻ തീറ്റിക്കുമെ പുളിമാങ്ങ....",
+    "മ്മക്ക് ഓരോ ബിയറാ കാച്ചിയാലോ...",
+    "ഓ പിന്നെ നീ ഒക്കെ പ്രേമിക്കുമ്പോൾ അത് പ്രണയം.... നമ്മൾ ഒക്കെ പ്രേമിക്കുമ്പോൾ അത് കമ്പി...",
+    "കള്ളടിക്കുന്നവനല്ലേ കരിമീനിന്റെ സ്വാദറിയു.....",
+    "ഡാ വിജയാ നമുക്കെന്താ ഈ ബുദ്ധി നേരത്തെ തോന്നാതിരുന്നത്...!",
+    "ഇത്രേം കാലം എവിടെ ആയിരുന്നു....!",
+    "ദൈവമേ എന്നെ മാത്രം രക്ഷിക്കണേ....",
+    "എനിക്കറിയാം ഇവന്റെ അച്ഛന്റെ പേര് ഭവാനിയമ്മ എന്നാ....",
+    "ഡാ ദാസാ... ഏതാ ഈ അലവലാതി.....",
+    "ഉപ്പുമാവിന്റെ ഇംഗ്ലീഷ് സാൾട് മംഗോ ട്രീ.....",
+    "മക്കളെ.. രാജസ്ഥാൻ മരുഭൂമിയിലേക്ക് മണല് കയറ്റിവിടാൻ നോക്കല്ലേ.....",
+    "നിന്റെ അച്ഛനാടാ പോൾ ബാർബർ....",
+    "കാർ എൻജിൻ ഔട്ട് കംപ്ലീറ്റ്‌ലി.....",
+    "ഇത് കണ്ണോ അതോ കാന്തമോ...",
+    "നാലാമത്തെ പെഗ്ഗിൽ ഐസ്‌ക്യൂബ്സ് വീഴുന്നതിനു മുൻപ് ഞാൻ അവിടെ എത്തും.....",
+    "അവളെ ഓർത്ത് കുടിച്ച കല്ലും നനഞ്ഞ മഴയും വേസ്റ്റ്....",
+    "എന്നോട് പറ ഐ ലവ് യൂ ന്ന്....",
+    "അല്ല ഇതാര് വാര്യംപിള്ളിയിലെ മീനാക്ഷി അല്ലയോ... എന്താ മോളെ സ്കൂട്ടറില്.... "
+  
 )
 
 SLAP_TEMPLATES = (
-    "{user1} {hits} {user2} with a {item}.",
-    "{user1} {hits} {user2} in the face with a {item}.",
-    "{user1} {hits} {user2} around a bit with a {item}.",
-    "{user1} {throws} a {item} at {user2}.",
-    "{user1} grabs a {item} and {throws} it at {user2}'s face.",
-    "{user1} launches a {item} in {user2}'s general direction.",
-    "{user1} starts slapping {user2} silly with a {item}.",
-    "{user1} pins {user2} down and repeatedly {hits} them with a {item}.",
-    "{user1} grabs up a {item} and {hits} {user2} with it.",
-    "{user1} ties {user2} to a chair and {throws} a {item} at them.",
-    "{user1} gave a friendly push to help {user2} learn to swim in lava."
+    "{user1} {user2} നെ ചുറ്റിക കൊണ്ട് തലക്കടിച്ചു.",
+    "{user1} തടിക്കഷണം കൊണ്ട് {user2} വിന്റെ മുഖത്തു അടിച്ചു. ",
+    "{user1} {user2} നെ കാലിൽ പിടിച്ചു കറക്കി എറിഞ്ഞു ",
+    "{user1} വലിയ ഒരു കല്ല് എടുത്ത് {user2} വിന്റെ തലയിലേക്ക് ഇട്ടു",
+    "{user1} ഒരു വലിയ പാത്രം എടുത്ത് {user2} വിന്റെ മുഖത്ത് ആഞ്ഞടിച്ചു.",
+    "{user1} {user2} വിന്റെ തലക്ക് ഇരുമ്പ് പൈപ്പ് വെച്ചടിച്ചു.",
+    "{user1} ഭിത്തിയിൽ തൂക്കിയിട്ടിരുന്ന ക്ലോക്ക് എടുത്ത് {user2} വിന്റെ പ്രധാന ഭാഗത്ത് അടിച്ചു .",
+    "{user1} {user2} വിനെ കുനിച്ചു നിർത്തി വലിയൊരു തടിക്കഷണം മുതുകത്തിട്ടു",
+    "{user1} ഒരു ഇരുമ്പിന്റെ കസേര എടുത്ത് {user2} ന്റെ തലക്ക് അടിച്ചു..",
+    "{user1} {user2} നെ മരത്തിൽ കെട്ടിയിട്ട് കാലിൽ തീ കൊടുത്തു..."
+    
 )
 
 ITEMS = (
@@ -116,18 +98,18 @@ ITEMS = (
 )
 
 THROW = (
-    "throws",
-    "flings",
-    "chucks",
-    "hurls",
+    "എറിഞ്ഞു",
+    "വിക്ഷേപിച്ചു",
+    "തട്ടി",
+    "വീശിയെറിഞ്ഞു",
 )
 
 HIT = (
-    "hits",
-    "whacks",
-    "slaps",
-    "smacks",
-    "bashes",
+    "അടിച്ചു",
+    "ശക്തിയായി പ്രഹരിച്ചു",
+    "തല്ലി",
+    "ഇടിച്ചു",
+    "തൊഴിച്ചു",
 )
 
 GMAPS_LOC = "https://maps.googleapis.com/maps/api/geocode/json"
@@ -138,6 +120,10 @@ GMAPS_TIME = "https://maps.googleapis.com/maps/api/timezone/json"
 def runs(bot: Bot, update: Update):
     update.effective_message.reply_text(random.choice(RUN_STRINGS))
 
+    if message.reply_to_message:
+      message.reply_to_message.reply_text(RUN_STRINGS)
+    else:
+      message.reply_text(RUN_STRINGS)
 
 @run_async
 def slap(bot: Bot, update: Update, args: List[str]):
@@ -185,7 +171,10 @@ def get_bot_ip(bot: Bot, update: Update):
     res = requests.get("http://ipinfo.io/ip")
     update.message.reply_text(res.text)
 
-
+@run_async
+def extra(bot: Bot, update: Update):
+    update.message.reply_text("ഞെക്കണ്ട വർക്കാവുല്ല.. 😝😝😉😉 ")
+    
 @run_async
 def get_id(bot: Bot, update: Update, args: List[str]):
     user_id = extract_user(update.effective_message, args)
@@ -200,43 +189,6 @@ def get_id(bot: Bot, update: Update, args: List[str]):
                     escape_markdown(user1.first_name),
                     user1.id),
                 parse_mode=ParseMode.MARKDOWN)
-        elif update.effective_message.reply_to_message:
-            m1 = update.effective_message.reply_to_message
-            if m1.audio:
-                update.effective_message.reply_text(
-                    "The audio message has file id `{}`".format(escape_markdown(m1.audio.file_id)),
-                    parse_mode=ParseMode.MARKDOWN
-                )
-            elif m1.document:
-                update.effective_message.reply_text(
-                    "The document message has file id `{}`".format(escape_markdown(m1.document.file_id)),
-                    parse_mode=ParseMode.MARKDOWN
-                )
-            # elif m1.animation:
-            #     update.effective_message.reply_text(
-            #         "The animation message has file id `{}`".format(escape_markdown(m1.animation.file_id)),
-            #         parse_mode=ParseMode.MARKDOWN
-            #     )
-            elif m1.photo:
-                update.effective_message.reply_text(
-                    "The HQ photo has file id `{}`".format(escape_markdown(m1.photo[-1].file_id)),
-                    parse_mode=ParseMode.MARKDOWN
-                )
-            elif m1.video:
-                update.effective_message.reply_text(
-                    "The video message has file id `{}`".format(escape_markdown(m1.video.file_id)),
-                    parse_mode=ParseMode.MARKDOWN
-                )
-            elif m1.voice:
-                update.effective_message.reply_text(
-                    "The voice message has file id `{}`".format(escape_markdown(m1.voice.file_id)),
-                    parse_mode=ParseMode.MARKDOWN
-                )
-            elif m1.video_note:
-                update.effective_message.reply_text(
-                    "The video note has file id `{}`".format(escape_markdown(m1.video_note.file_id)),
-                    parse_mode=ParseMode.MARKDOWN
-                )
         else:
             user = bot.get_chat(user_id)
             update.effective_message.reply_text("{}'s id is `{}`.".format(escape_markdown(user.first_name), user.id),
@@ -285,19 +237,19 @@ def info(bot: Bot, update: Update, args: List[str]):
     text += "\nPermanent user link: {}".format(mention_html(user.id, "link"))
 
     if user.id == OWNER_ID:
-        text += "\n\nThis person is my owner - I would never do anything against them!"
+        text += "\n\nഈ കള്ള കുരുപ്പ് ആണെന്റെ മൊയലാളി.... ഇവനെ എനിക്ക് ഒന്നും ചെയ്യാൻ പറ്റൂല്ല.... 😔!"
     else:
         if user.id in SUDO_USERS:
-            text += "\nThis person is one of my sudo users! " \
-                    "Nearly as powerful as my owner - so watch it."
+            text += "\nഇയാൾ ഒരു SUDO USER ആണ് 😋" \
+                    "മൊയ്ലാളിന്റെ അത്രേം പവർ ഒക്കെ ഉണ്ട്... അതോണ്ട് സൂക്ഷിച്ചും കണ്ടും ഒക്കെ നിന്നോ.... 😊"
         else:
             if user.id in SUPPORT_USERS:
-                text += "\nThis person is one of my support users! " \
-                        "Not quite a sudo user, but can still gban you off the map."
+                text += "\nഇയാൾ ഒരു SUPPORT USER ആണ്.. ! " \
+                        "GBAN ചെയ്യാൻ അല്ലാതെ വേറൊന്നിനും പറ്റൂല്ല... പക്ഷെ അത് മതിയല്ലോ.... അതോണ്ട് ഇവനേം ഒന്ന് സൂക്ഷിച്ചോ.... 😉."
 
             if user.id in WHITELIST_USERS:
-                text += "\nThis person has been whitelisted! " \
-                        "That means I'm not allowed to ban/kick them."
+                text += "\nഇയാൾ WHITELISTED ആണ്...! " \
+                        "അതോണ്ട് ഇയാളെ എനിക്ക് ban/kick ചെയ്യാൻ പറ്റൂല്ല.... 😔"
 
     for mod in USER_INFO:
         mod_info = mod.__user_info__(user.id).strip()
@@ -340,7 +292,7 @@ def get_time(bot: Bot, update: Update, args: List[str]):
             elif country:
                 location = country
 
-            timenow = int(datetime.utcnow().timestamp())
+            timenow = int(datetime.utcnow().strftime("%s"))
             res = requests.get(GMAPS_TIME, params=dict(location="{},{}".format(lat, long), timestamp=timenow))
             if res.status_code == 200:
                 offset = json.loads(res.text)['dstOffset']
@@ -359,10 +311,24 @@ def echo(bot: Bot, update: Update):
         message.reply_text(args[1], quote=False)
     message.delete()
 
+def ping(bot: Bot, update: Update):
+    start_time = time.time()
+    bot.send_message(update.effective_chat.id, "Starting ping testing now!")
+    end_time = time.time()
+    ping_time = float(end_time - start_time)*1000
+    update.effective_message.reply_text(" Ping speed was : {}ms".format(ping_time))
 
 @run_async
 def reply_keyboard_remove(bot: Bot, update: Update):
-    reply_markup = ReplyKeyboardRemove()
+    reply_keyboard = []
+    reply_keyboard.append([
+        ReplyKeyboardRemove(
+            remove_keyboard=True
+        )
+    ])
+    reply_markup = ReplyKeyboardRemove(
+        remove_keyboard=True
+    )
     old_message = bot.send_message(
         chat_id=update.message.chat_id,
         text='trying',
@@ -373,22 +339,6 @@ def reply_keyboard_remove(bot: Bot, update: Update):
         chat_id=update.message.chat_id,
         message_id=old_message.message_id
     )
-
-
-@run_async
-def gdpr(bot: Bot, update: Update):
-    update.effective_message.reply_text("Deleting identifiable data...")
-    for mod in GDPR:
-        mod.__gdpr__(update.effective_user.id)
-
-    update.effective_message.reply_text("Your personal data has been deleted.\n\nNote that this will not unban "
-                                        "you from any chats, as that is telegram data, not Marie data. "
-                                        "Flooding, warns, and gbans are also preserved, as of "
-                                        "[this](https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr/individual-rights/right-to-erasure/), "
-                                        "which clearly states that the right to erasure does not apply "
-                                        "\"for the performance of a task carried out in the public interest\", as is "
-                                        "the case for the aforementioned pieces of data.",
-                                        parse_mode=ParseMode.MARKDOWN)
 
 
 MARKDOWN_HELP = """
@@ -433,17 +383,16 @@ def stats(bot: Bot, update: Update):
 # /ip is for private use
 __help__ = """
  - /id: get the current group id. If used by replying to a message, gets that user's id.
+ - /rmkeyboard: Helps you to remove Bot Keyboards from chats... Kanged from @MidukkiBot.
  - /runs: reply a random string from an array of replies.
  - /slap: slap a user, or get slapped if not a reply.
  - /time <place>: gives the local time at the given place.
  - /info: get information about a user.
- - /gdpr: deletes your information from the bot's database. Private chats only.
 
  - /markdownhelp: quick summary of how markdown works in telegram - can only be called in private chats.
- - /removebotkeyboard: similar functionality of @RemoveKeyboardBot ഒരു കുടക്കീഴില്‍ 
 """
 
-__mod_name__ = "Misc"
+__mod_name__ = "മറ്റുള്ളവ"
 
 ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True)
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID))
@@ -454,14 +403,17 @@ RUNS_HANDLER = DisableAbleCommandHandler("runs", runs)
 SLAP_HANDLER = DisableAbleCommandHandler("slap", slap, pass_args=True)
 INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True)
 
+PING_HANDLER = DisableAbleCommandHandler("ping", ping)
+EXTRA_HANDLER = CommandHandler("lol", extra)
 ECHO_HANDLER = CommandHandler("echo", echo, filters=Filters.user(OWNER_ID))
 MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.private)
-
+RMKEYBOARD_HANDLER = DisableAbleCommandHandler("rmkeyboard", reply_keyboard_remove)
 STATS_HANDLER = CommandHandler("stats", stats, filters=CustomFilters.sudo_filter)
-GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
 
 dispatcher.add_handler(ID_HANDLER)
+dispatcher.add_handler(PING_HANDLER)
 dispatcher.add_handler(IP_HANDLER)
+dispatcher.add_handler(EXTRA_HANDLER)
 dispatcher.add_handler(TIME_HANDLER)
 dispatcher.add_handler(RUNS_HANDLER)
 dispatcher.add_handler(SLAP_HANDLER)
@@ -469,6 +421,4 @@ dispatcher.add_handler(INFO_HANDLER)
 dispatcher.add_handler(ECHO_HANDLER)
 dispatcher.add_handler(MD_HELP_HANDLER)
 dispatcher.add_handler(STATS_HANDLER)
-dispatcher.add_handler(GDPR_HANDLER)
-
-dispatcher.add_handler(DisableAbleCommandHandler("removebotkeyboard", reply_keyboard_remove))
+dispatcher.add_handler(RMKEYBOARD_HANDLER)

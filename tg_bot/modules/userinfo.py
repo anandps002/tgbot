@@ -46,7 +46,7 @@ def set_about_me(bot: Bot, update: Update):
             message.reply_text("താങ്കളുടെ വിവരങ്ങൾ വിജയകരമായി രേഖപ്പെടുത്തിയിരിക്കുന്നു ")
         else:
             message.reply_text(
-                "Your info needs to be under {} characters! You have {}.".format(MAX_MESSAGE_LENGTH // 4, len(info[1])))
+                "താങ്കളെ കുറിച്ചുള്ള വിവരണം {} അക്ഷരങ്ങളിൽ ഒതുക്കേണ്ടതാണ് ".format(MAX_MESSAGE_LENGTH // 4, len(info[1])))
 
 
 @run_async
@@ -66,9 +66,9 @@ def about_bio(bot: Bot, update: Update, args: List[str]):
                                             parse_mode=ParseMode.MARKDOWN)
     elif message.reply_to_message:
         username = user.first_name
-        update.effective_message.reply_text("{} hasn't had a message set about themselves yet!".format(username))
+        update.effective_message.reply_text("{} ഇതുവരെ അദ്ദേഹത്തെക്കുറിച്ചുള്ള വിവരങ്ങൾ ഒന്നും ചേർത്തിട്ടില്ല !".format(username))
     else:
-        update.effective_message.reply_text("You haven't had a bio set about yourself yet!")
+        update.effective_message.reply_text("നിങ്ങളെക്കുറിചുള്ള നിങ്ങളുടെ വിവരങ്ങൾ ഇതുവരെ ചേർത്തിട്ടില്ല !")
 
 
 @run_async
@@ -79,10 +79,10 @@ def set_about_bio(bot: Bot, update: Update):
         repl_message = message.reply_to_message
         user_id = repl_message.from_user.id
         if user_id == message.from_user.id:
-            message.reply_text("Ha, you can't set your own bio! You're at the mercy of others here...")
+            message.reply_text("താങ്കൾ താങ്കളുടെ തന്നെ വിവരങ്ങൾ മാറ്റാൻ നോക്കുന്നോ...?? അത് പറ്റില്ല.")
             return
         elif user_id == bot.id and sender.id not in SUDO_USERS:
-            message.reply_text("Erm... yeah, I only trust sudo users to set my bio.")
+            message.reply_text("എന്റെ വിവരങ്ങൾ മാറ്റാൻ SUDO USERSനു മാത്രമേ സാധിക്കുകയുള്ളു .")
             return
 
         text = message.text
@@ -90,13 +90,13 @@ def set_about_bio(bot: Bot, update: Update):
         if len(bio) == 2:
             if len(bio[1]) < MAX_MESSAGE_LENGTH // 4:
                 sql.set_user_bio(user_id, bio[1])
-                message.reply_text("Updated {}'s bio!".format(repl_message.from_user.first_name))
+                message.reply_text("{} യയെ കുറിച്ചുള്ള വിവരം വിജയകരമായി ശേഖരിച്ചിരുന്നു !".format(repl_message.from_user.first_name))
             else:
                 message.reply_text(
-                    "A bio needs to be under {} characters! You tried to set {}.".format(
+                    "നിങ്ങളെക്കുറിച്ചുള്ള വിവരണം {} അക്ഷരത്തിൽ ഒതുക്കേണ്ടതാണ് ! നിങ്ങൾ ഇപ്പോൾ ശ്രമിച്ച അക്ഷരങ്ങളുടെ എണ്ണം  {} ആണ് .".format(
                         MAX_MESSAGE_LENGTH // 4, len(bio[1])))
     else:
-        message.reply_text("Reply to someone's message to set their bio!")
+        message.reply_text("ആരുടെയെങ്കിലും MESSAGEന് REPLY ആയി കൊടുത്താൽ മാത്രമേ അദ്ദേഹത്തിന്റെ വിവരങ്ങൾ ചേർക്കാൻ കഴിയുകയുള്ളു ")
 
 
 def __user_info__(user_id):
@@ -112,11 +112,6 @@ def __user_info__(user_id):
         return ""
 
 
-def __gdpr__(user_id):
-    sql.clear_user_info(user_id)
-    sql.clear_user_bio(user_id)
-
-
 __help__ = """
  - /setbio <text>: while replying, will save another user's bio
  - /bio: will get your or another user's bio. This cannot be set by yourself.
@@ -124,7 +119,7 @@ __help__ = """
  - /me: will get your or another user's info
 """
 
-__mod_name__ = "ജീവചരിത്രം"
+__mod_name__ = "വിവരങ്ങൾ"
 
 SET_BIO_HANDLER = DisableAbleCommandHandler("setbio", set_about_bio)
 GET_BIO_HANDLER = DisableAbleCommandHandler("bio", about_bio, pass_args=True)
