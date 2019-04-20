@@ -25,7 +25,8 @@ I'm built in python3, using the python-telegram-bot library, and am not an open 
 You can find the list of available commands with /help.
 
 Source of the bot might be changed and that's not [my](https://telegram.dog/Anand_VFC) problem.
-Also, no support can be given for any [clones](https://telegram.dog/MidukkiBot); source might be changed and that's not [my](https://telegram.dog/Anand_VFC) problem.
+For support join [this group](https://t.me/testyrobo)
+Also, no support can be given for any [clones](https://telegram.dog/MidukkiBot)
 **Keep in mind that any changes you DO do to the source have to be on github, as per the license.**
 """
 
