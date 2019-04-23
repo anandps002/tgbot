@@ -25,9 +25,10 @@ I'm built in python3, using the python-telegram-bot library, and am not an open 
 You can find the list of available commands with /help.
 
 Source of the bot might be changed and that's not [my](https://telegram.dog/Anand_VFC) problem.
+
 For support join [this group](https://t.me/testyrobo)
+
 Also, no support can be given for any [clones](https://telegram.dog/MidukkiBot)
-**Keep in mind that any changes you DO do to the source have to be on github, as per the license.**
 """
 
 HELP_STRINGS = """
@@ -39,7 +40,6 @@ the things I can help you with.
  - /start: start the bot
  - /help: PM's you this message.
  - /help <module name>: PM's you info about that module.
- - /donate: information about how to donate!
  - /settings:
    - in PM: will send you your settings for all supported modules.
    - in a group: will redirect you to pm, with all that chat's settings.
@@ -49,7 +49,7 @@ And the following:
 """.format(dispatcher.bot.first_name, "" if not ALLOW_EXCL else "\nAll commands can either be used with / or !.\n")
 
 DONATE_STRING = """Heya, glad to hear you want to donate!
-It took lots of work for [my creator](https://telegram.dog/SonOfLars) to get me to where I am now, and every donation helps \
+It took lots of work for [my creator](https://telegram.dog/Anand_VFC) to get me to where I am now, and every donation helps \
 motivate him to make me even better. All the donation money will go to a better VPS to host me, and/or beer \
 (see his bio!). He's just a poor student, so every little helps!"""
 
