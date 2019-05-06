@@ -29,6 +29,7 @@ Source of the bot might be changed and that's not [my](https://telegram.dog/Anan
 For support join [this group](https://t.me/testyrobo)
 
 Also, no support can be given for any [clones](https://telegram.dog/MidukkiBot)
+[Add me to a group](buttonurl:https://telegram.me/Joker_dabotstartgroup=add)
 """
 
 HELP_STRINGS = """
