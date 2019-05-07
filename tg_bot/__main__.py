@@ -30,10 +30,7 @@ For support join [this group](https://t.me/testyrobo)
 
 Also, no support can be given for any [clones](https://telegram.dog/MidukkiBot)
           
-                                            reply_markup=InlineKeyboardMarkup(
-                                                [[InlineKeyboardButton(text="Help",
-                                                                       url="t.me/{}?startgroup=add".format(
-                                                                           bot.username))]]))
+                                           
 """
 
 HELP_STRINGS = """
