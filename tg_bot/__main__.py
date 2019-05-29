@@ -19,24 +19,15 @@ from tg_bot.modules.helper_funcs.chat_status import is_user_admin
 from tg_bot.modules.helper_funcs.misc import paginate_modules
 
 PM_START_TEXT = """
-Hi {}, my name is {}! I'm a group manager bot maintained by [Anand](tg://user?id={}).
+Hi {}, my name is {}! I'm a group manager bot maintained by [This Person](tg://user?id={}).
 I'm built in python3, using the python-telegram-bot library, and am not an open source..
 
 You can find the list of available commands with /help.
 
-Source of the bot might be changed and that's not [my](tg://user?id={}) problem.
+Source of the bot might be changed and that's not [my](telegram.dog/AnandTEcH_MasTer) problem.
 
-If You want to add me to any group click [here](t.me/HarukaAyaBot?startgroup=true)
-"""
-
-keyboard = [[InlineKeyboardButton(text="📢 Support Group", url="https://t.me/joinchat/JoNrMhUzAi8eftm00DkWag")]]
- keyboard += [[InlineKeyboardButton(text="🛠 Control panel", callback_data="cntrl_panel_M")]]
-    keyboard += [[InlineKeyboardButton(text="🇺🇸 Language", callback_data="set_lang_"), 
-        InlineKeyboardButton(text="❔ Help", callback_data="help_back")]]
-
-    update.effective_message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
-          
-                                           
+If You want to add me to any group click [here](t.me/Badrivj_bot?startgroup=true)
+"""                                        
 
 
 HELP_STRINGS = """
