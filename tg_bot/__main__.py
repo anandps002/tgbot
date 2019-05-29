@@ -24,14 +24,20 @@ I'm built in python3, using the python-telegram-bot library, and am not an open 
 
 You can find the list of available commands with /help.
 
-Source of the bot might be changed and that's not [my](https://telegram.dog/Anand_VFC) problem.
+Source of the bot might be changed and that's not [my](tg://user?id={}) problem.
 
-For support join [this group](https://t.me/testyrobo)
+If You want to add me to any group click [here](t.me/HarukaAyaBot?startgroup=true)
+"""
 
-Also, no support can be given for any [clones](https://telegram.dog/MidukkiBot)
+keyboard = [[InlineKeyboardButton(text="📢 Support Group", url="https://t.me/joinchat/JoNrMhUzAi8eftm00DkWag")]]
+ keyboard += [[InlineKeyboardButton(text="🛠 Control panel", callback_data="cntrl_panel_M")]]
+    keyboard += [[InlineKeyboardButton(text="🇺🇸 Language", callback_data="set_lang_"), 
+        InlineKeyboardButton(text="❔ Help", callback_data="help_back")]]
+
+    update.effective_message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
           
                                            
-"""
+
 
 HELP_STRINGS = """
 Hey there! My name is *{}*.
