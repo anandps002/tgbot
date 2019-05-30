@@ -168,10 +168,11 @@ Click Help button to find out more about how to use me to my full potential.\n\n
 
     text += "Join [SUPPORT Group](https://t.me/AnAnD_BotS)  if you need any support or help\n\n\
 Follow  [Mia 2.0](https://t.me/Miababot)  if you want to keep up with the news, updates and bot downtime!\n\n\
-Made with love by  @AnandTEcH_MasTer"
+Made with love by  @AnandTEcH_MasTer "
 
     keyboard = [[InlineKeyboardButton(text="📢 Support Group", url="https://t.me/AnAnD_BotS")]]
     keyboard += [[InlineKeyboardButton(text="❔ Help", callback_data="help_back")]]
+    
 
     update.effective_message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
 
