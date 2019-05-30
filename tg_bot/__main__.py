@@ -24,9 +24,7 @@ I'm built in python3, using the python-telegram-bot library, and am not an open 
 
 You can find the list of available commands with /help.
 
-Source of the bot might be changed and that's not [my](telegram.dog/AnandTEcH_MasTer) problem.
-
-If You want to add me to any group click [here](t.me/Badrivj_bot?startgroup=true)
+If You want to add me to any group click [here](t.me/Kuttappibot?startgroup=true)
 """                                        
 
 
